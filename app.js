@@ -5,6 +5,13 @@
     { title: "Équipes en éducation physique", description: "Organisez des équipes et des tournois pour vos cours d'éducation physique.", category: "Organisation", section: "Numérique", icon: "users", url: "https://lapizzaderafa.github.io/equipes-education-physique-/", display_order: 2, is_active: true },
     { title: "Badminton School", description: "Un environnement numérique pour soutenir l'enseignement du badminton.", category: "Badminton", section: "Numérique", icon: "medal", url: "https://raphaelfrenette-a11y.github.io/badminton_school/", display_order: 3, is_active: true }
   ];
+  const pedagogicalResources = [
+    { title: "Goalball", description: "", category: "Pédagogie", section: "Pédagogique", icon: "activity", placeholder: true, display_order: 1, is_active: true },
+    { title: "Badminton", description: "", category: "Pédagogie", section: "Pédagogique", icon: "activity", placeholder: true, display_order: 2, is_active: true },
+    { title: "Basketball", description: "", category: "Pédagogie", section: "Pédagogique", icon: "activity", placeholder: true, display_order: 3, is_active: true },
+    { title: "DBL", description: "", category: "Pédagogie", section: "Pédagogique", icon: "activity", placeholder: true, display_order: 4, is_active: true },
+    { title: "Et plus à suivre...", description: "", category: "Pédagogie", section: "Pédagogique", icon: "activity", placeholder: true, display_order: 5, is_active: true }
+  ];
   const iconMap = {
     trophy: ["🏆", "icon-lime"], users: ["◉", "icon-blue"], medal: ["✦", "icon-coral"],
     book: ["▤", "icon-teal"], "book-open": ["▧", "icon-teal"], activity: ["⌁", "icon-lime"],
@@ -49,22 +56,29 @@
     description.className = "resource-description";
     description.textContent = resource.description || "";
 
-    const link = document.createElement("a");
-    link.className = "card-link";
-    link.href = safeUrl(resource.url) || "#";
-    link.textContent = "Accéder à la ressource ";
-    if (link.href === "#" || !safeUrl(resource.url)) {
-      link.setAttribute("aria-disabled", "true");
-      link.addEventListener("click", e => e.preventDefault());
+    if (resource.placeholder) {
+      const comingSoon = document.createElement("p");
+      comingSoon.className = "coming-soon";
+      comingSoon.textContent = "Contenu à venir";
+      item.append(icon, category, title, comingSoon);
     } else {
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      const arrow = document.createElement("span");
-      arrow.setAttribute("aria-hidden", "true");
-      arrow.textContent = "↗";
-      link.append(arrow);
+      const link = document.createElement("a");
+      link.className = "card-link";
+      link.href = safeUrl(resource.url) || "#";
+      link.textContent = "Accéder à la ressource ";
+      if (link.href === "#" || !safeUrl(resource.url)) {
+        link.setAttribute("aria-disabled", "true");
+        link.addEventListener("click", e => e.preventDefault());
+      } else {
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        const arrow = document.createElement("span");
+        arrow.setAttribute("aria-hidden", "true");
+        arrow.textContent = "↗";
+        link.append(arrow);
+      }
+      item.append(icon, category, title, description, link);
     }
-    item.append(icon, category, title, description, link);
     return item;
   }
   function render() {
@@ -99,9 +113,11 @@
     sectionRoot.append(grid);
     empty.hidden = true;
     status.textContent = `${filtered.length} ${filtered.length === 1 ? "ressource disponible" : "ressources disponibles"}`;
-    const digitalCount = resources.filter(r => r.is_active !== false && (r.section || "Numérique") === "Numérique").length;
-    const count = document.querySelector("#tab-numerique .tab-count");
-    if (count) count.textContent = digitalCount;
+    ["Pédagogique", "Numérique"].forEach(section => {
+      const count = document.querySelector(`[data-section="${section}"] .tab-count`);
+      const total = resources.filter(r => r.is_active !== false && (r.section || "Numérique") === section).length;
+      if (count) count.textContent = total;
+    });
   }
   filters.forEach(button => button.addEventListener("click", () => {
     activeFilter = button.dataset.filter;
@@ -118,6 +134,7 @@
   async function loadResources() {
     const cfg = window.PETEACH_CONFIG || {};
     if (!cfg.supabaseUrl || !cfg.supabaseKey) {
+      resources = [...fallbackResources, ...pedagogicalResources];
       status.textContent = "Ressources locales affichées — configuration Supabase manquante.";
       render();
       return;
@@ -129,10 +146,11 @@
       });
       if (!response.ok) throw new Error(`Supabase HTTP ${response.status}`);
       const rows = await response.json();
-      if (Array.isArray(rows) && rows.length) resources = rows;
+      if (Array.isArray(rows) && rows.length) resources = [...rows, ...pedagogicalResources];
       status.textContent = "";
     } catch (error) {
       console.warn("PEteach: impossible de charger les ressources depuis Supabase.", error);
+      resources = [...fallbackResources, ...pedagogicalResources];
       status.textContent = "Mode hors connexion : les ressources principales sont affichées.";
     }
     render();
