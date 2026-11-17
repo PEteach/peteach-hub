@@ -1,16 +1,20 @@
 (() => {
   "use strict";
   const fallbackResources = [
-    { title: "Badminton ELO", description: "Gérez les joueurs, les matchs et les classements avec un système de cote ELO.", category: "Badminton", icon: "trophy", url: "https://peteach.github.io/badminton-elo/", display_order: 1, is_active: true },
-    { title: "Équipes en éducation physique", description: "Organisez des équipes et des tournois pour vos cours d'éducation physique.", category: "Organisation", icon: "users", url: "https://lapizzaderafa.github.io/equipes-education-physique-/", display_order: 2, is_active: true },
-    { title: "Badminton School", description: "Un environnement numérique pour soutenir l'enseignement du badminton.", category: "Badminton", icon: "medal", url: "https://raphaelfrenette-a11y.github.io/badminton_school/", display_order: 3, is_active: true }
+    { title: "Badminton ELO", description: "Gérez les joueurs, les matchs et les classements avec un système de cote ELO.", category: "Badminton", section: "Numérique", icon: "trophy", url: "https://peteach.github.io/badminton-elo/", display_order: 1, is_active: true },
+    { title: "Équipes en éducation physique", description: "Organisez des équipes et des tournois pour vos cours d'éducation physique.", category: "Organisation", section: "Numérique", icon: "users", url: "https://lapizzaderafa.github.io/equipes-education-physique-/", display_order: 2, is_active: true },
+    { title: "Badminton School", description: "Un environnement numérique pour soutenir l'enseignement du badminton.", category: "Badminton", section: "Numérique", icon: "medal", url: "https://raphaelfrenette-a11y.github.io/badminton_school/", display_order: 3, is_active: true }
   ];
   const iconMap = {
     trophy: ["🏆", "icon-lime"], users: ["◉", "icon-blue"], medal: ["✦", "icon-coral"],
     book: ["▤", "icon-teal"], "book-open": ["▧", "icon-teal"], activity: ["⌁", "icon-lime"],
     dumbbell: ["↗", "icon-blue"], clipboard: ["▣", "icon-coral"], default: ["✳", "icon-teal"]
   };
-  const grid = document.getElementById("resourceGrid");
+  const sections = [
+    { key: "Pédagogique", title: "Pédagogique", description: "Des idées, des contenus et des ressources pour enrichir l’enseignement." },
+    { key: "Numérique", title: "Numérique", description: "Des outils numériques pour organiser, créer et simplifier vos cours." }
+  ];
+  const sectionRoot = document.getElementById("resourceSections");
   const status = document.getElementById("resourceStatus");
   const empty = document.getElementById("emptyState");
   const search = document.getElementById("searchInput");
@@ -64,10 +68,37 @@
     const term = search.value.trim().toLocaleLowerCase("fr-CA");
     const filtered = resources.filter(r => {
       const matchesCategory = activeFilter === "Toutes" || r.category === activeFilter;
-      const haystack = `${r.title} ${r.description} ${r.category}`.toLocaleLowerCase("fr-CA");
+      const haystack = `${r.title} ${r.description} ${r.category} ${r.section || "Numérique"}`.toLocaleLowerCase("fr-CA");
       return r.is_active !== false && matchesCategory && haystack.includes(term);
     }).sort((a,b) => (a.display_order || 0) - (b.display_order || 0));
-    grid.replaceChildren(...filtered.map(card));
+
+    sectionRoot.replaceChildren();
+    sections.forEach(section => {
+      const sectionResources = filtered.filter(r => (r.section || "Numérique") === section.key);
+      const wrapper = document.createElement("section");
+      wrapper.className = "resource-group";
+      const heading = document.createElement("div");
+      heading.className = "resource-group-heading";
+      const title = document.createElement("h3");
+      title.textContent = section.title;
+      const description = document.createElement("p");
+      description.textContent = section.description;
+      heading.append(title, description);
+      const grid = document.createElement("div");
+      grid.className = "resource-grid";
+      if (sectionResources.length) {
+        grid.append(...sectionResources.map(card));
+      } else {
+        const note = document.createElement("p");
+        note.className = "section-empty";
+        note.textContent = section.key === "Pédagogique"
+          ? "Les ressources pédagogiques seront ajoutées ici."
+          : "Aucune ressource numérique ne correspond à votre recherche.";
+        grid.append(note);
+      }
+      wrapper.append(heading, grid);
+      sectionRoot.append(wrapper);
+    });
     empty.hidden = filtered.length > 0;
     status.textContent = `${filtered.length} ${filtered.length === 1 ? "ressource disponible" : "ressources disponibles"}`;
   }
@@ -87,7 +118,7 @@
       return;
     }
     try {
-      const endpoint = `${cfg.supabaseUrl}/rest/v1/resources?select=title,description,category,icon,url,display_order,is_active&is_active=eq.true&order=display_order.asc`;
+      const endpoint = `${cfg.supabaseUrl}/rest/v1/resources?select=title,description,category,section,icon,url,display_order,is_active&is_active=eq.true&order=display_order.asc`;
       const response = await fetch(endpoint, {
         headers: { apikey: cfg.supabaseKey, Authorization: `Bearer ${cfg.supabaseKey}` }
       });
