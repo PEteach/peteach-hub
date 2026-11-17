@@ -21,6 +21,9 @@
   const filters = [...document.querySelectorAll(".filter-button")];
   let resources = fallbackResources;
   let activeFilter = "Toutes";
+  let activeSection = "Numérique";
+  const tabs = [...document.querySelectorAll(".resource-tab")];
+  const panel = document.getElementById("resourcePanel");
 
   function safeUrl(value) {
     try { const u = new URL(value); return u.protocol === "https:" ? u.href : null; }
@@ -68,43 +71,45 @@
     const term = search.value.trim().toLocaleLowerCase("fr-CA");
     const filtered = resources.filter(r => {
       const matchesCategory = activeFilter === "Toutes" || r.category === activeFilter;
+      const matchesSection = (r.section || "Numérique") === activeSection;
       const haystack = `${r.title} ${r.description} ${r.category} ${r.section || "Numérique"}`.toLocaleLowerCase("fr-CA");
-      return r.is_active !== false && matchesCategory && haystack.includes(term);
+      return r.is_active !== false && matchesCategory && matchesSection && haystack.includes(term);
     }).sort((a,b) => (a.display_order || 0) - (b.display_order || 0));
 
-    sectionRoot.replaceChildren();
-    sections.forEach(section => {
-      const sectionResources = filtered.filter(r => (r.section || "Numérique") === section.key);
-      const wrapper = document.createElement("section");
-      wrapper.className = "resource-group";
-      const heading = document.createElement("div");
-      heading.className = "resource-group-heading";
-      const title = document.createElement("h3");
-      title.textContent = section.title;
-      const description = document.createElement("p");
-      description.textContent = section.description;
-      heading.append(title, description);
-      const grid = document.createElement("div");
-      grid.className = "resource-grid";
-      if (sectionResources.length) {
-        grid.append(...sectionResources.map(card));
-      } else {
-        const note = document.createElement("p");
-        note.className = "section-empty";
-        note.textContent = section.key === "Pédagogique"
-          ? "Les ressources pédagogiques seront ajoutées ici."
-          : "Aucune ressource numérique ne correspond à votre recherche.";
-        grid.append(note);
-      }
-      wrapper.append(heading, grid);
-      sectionRoot.append(wrapper);
+    tabs.forEach(tab => {
+      const selected = tab.dataset.section === activeSection;
+      tab.classList.toggle("active", selected);
+      tab.setAttribute("aria-selected", String(selected));
+      tab.tabIndex = selected ? 0 : -1;
     });
-    empty.hidden = filtered.length > 0;
+    panel.setAttribute("aria-labelledby", activeSection === "Numérique" ? "tab-numerique" : "tab-pedagogique");
+    sectionRoot.replaceChildren();
+    const grid = document.createElement("div");
+    grid.className = "resource-grid";
+    if (filtered.length) {
+      grid.append(...filtered.map(card));
+    } else {
+      const note = document.createElement("p");
+      note.className = "section-empty";
+      note.textContent = activeSection === "Pédagogique"
+        ? "Les ressources pédagogiques seront ajoutées ici."
+        : "Aucune ressource numérique ne correspond à votre recherche.";
+      grid.append(note);
+    }
+    sectionRoot.append(grid);
+    empty.hidden = true;
     status.textContent = `${filtered.length} ${filtered.length === 1 ? "ressource disponible" : "ressources disponibles"}`;
+    const digitalCount = resources.filter(r => r.is_active !== false && (r.section || "Numérique") === "Numérique").length;
+    const count = document.querySelector("#tab-numerique .tab-count");
+    if (count) count.textContent = digitalCount;
   }
   filters.forEach(button => button.addEventListener("click", () => {
     activeFilter = button.dataset.filter;
     filters.forEach(b => b.classList.toggle("active", b === button));
+    render();
+  }));
+  tabs.forEach(tab => tab.addEventListener("click", () => {
+    activeSection = tab.dataset.section;
     render();
   }));
   search.addEventListener("input", render);
