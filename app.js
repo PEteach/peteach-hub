@@ -146,7 +146,7 @@
       });
       if (!response.ok) throw new Error(`Supabase HTTP ${response.status}`);
       const rows = await response.json();
-      if (Array.isArray(rows) && rows.length) resources = [...rows, ...pedagogicalResources];
+      resources = [...(Array.isArray(rows) && rows.length ? rows : fallbackResources), ...pedagogicalResources];
       status.textContent = "";
     } catch (error) {
       console.warn("PEteach: impossible de charger les ressources depuis Supabase.", error);
