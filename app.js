@@ -1,7 +1,6 @@
 (() => {
   "use strict";
   const fallbackResources = [
-    { title: "Badminton ELO", description: "Gérez les joueurs, les matchs et les classements avec un système de cote ELO.", category: "Badminton", section: "Numérique", icon: "trophy", url: "https://peteach.github.io/badminton-elo/", display_order: 1, is_active: true },
     { title: "Équipes en éducation physique", description: "Organisez des équipes et des tournois pour vos cours d'éducation physique.", category: "Organisation", section: "Numérique", icon: "users", url: "https://lapizzaderafa.github.io/equipes-education-physique-/", display_order: 2, is_active: true },
     { title: "Badminton School", description: "Un environnement numérique pour soutenir l'enseignement du badminton.", category: "Badminton", section: "Numérique", icon: "medal", url: "https://raphaelfrenette-a11y.github.io/badminton_school/", display_order: 3, is_active: true }
   ];
