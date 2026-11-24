@@ -97,3 +97,65 @@ h1 span { color: var(--teal); }
   .resource-tab { flex: initial; padding: 12px 2px; }
   .mission-visual { height: 245px; }
 }
+
+
+/* PEteach — palette monochrome avec accent vert forêt */
+:root {
+  --navy: #171b19;
+  --navy2: #303a34;
+  --lime: #315b45;
+  --teal: #315b45;
+  --paper: #f3f4f2;
+  --ink: #202522;
+  --muted: #68716b;
+  --line: #d9ded9;
+  --coral: #8b978e;
+  --shadow: 0 8px 24px rgba(20, 30, 24, .07);
+}
+body { background: #fff; color: #202522; }
+.site-header { background: #fff; border-bottom-color: #e0e3e0; box-shadow: 0 2px 8px rgba(20,30,24,.025); }
+.brand, .brand-word span { color: #315b45; }
+.brand-mark { background: #171b19; }
+.brand-word span { color: #315b45; }
+.main-nav a { color: #555e58; }
+.main-nav a:hover, .text-link, .card-link { color: #315b45; }
+.nav-cta, .button-lime { background: #315b45; color: #fff; }
+.nav-cta:hover, .button-lime:hover { background: #254735; }
+.hero { background: #f1f3f0; color: #171b19; border-bottom-color: #e0e4df; }
+.eyebrow, .eyebrow-dark, .mission-copy .eyebrow { color: #315b45; }
+h1, .section-heading h2, .mission-copy h2, .resource-card h3 { color: #171b19; }
+h1 span, .section-heading h2 span, .mission-copy h2 span { color: #315b45; }
+.hero-lead, .section-intro, .mission-copy>p:not(.eyebrow), .resource-description { color: #626b65; }
+.hero-bottom-line { border-top-color: #dce2dc; }
+.hero-bottom-line .container, .hero-proof, .resource-status, .section-footnote { color: #717a73; }
+.resources-section { background: #fff; }
+.search-box { border-color: #d9ded9; }
+.search-box:focus-within { border-color: #315b45; box-shadow: 0 0 0 3px rgba(49,91,69,.10); }
+.filter-button { border-color: #d9ded9; color: #59635c; }
+.filter-button:hover, .filter-button.active { background: #315b45; border-color: #315b45; color: #fff; }
+.resource-tabs { border-bottom-color: #d9ded9; }
+.resource-tab { color: #59635c; }
+.resource-tab:hover { color: #171b19; }
+.resource-tab.active { color: #171b19; border-bottom-color: #315b45; }
+.tab-count { background: #edf1ed; color: #315b45; }
+.resource-card { border-color: #dfe3df; }
+.resource-card:hover { border-color: #9aaa9e; box-shadow: 0 5px 16px rgba(20,30,24,.06); }
+.resource-icon, .icon-lime, .icon-blue, .icon-coral { background: #edf1ed; color: #315b45; }
+.resource-category { color: #315b45; }
+.card-link { border-top-color: #e7ebe7; }
+.card-link:hover { color: #254735; }
+.section-empty { background: #f5f6f4; border-color: #d9ded9; color: #626b65; }
+.mission-section { background: #f1f3f0; border-top-color: #e0e4df; }
+.mission-visual { background: #315b45; }
+.mission-stamp { color: #fff; }
+.mission-stamp b { color: #dce8df; }
+.mission-caption { color: #d0ddd3; }
+.button-outline { border-color: #9aaa9e; color: #315b45; }
+.button-outline:hover { background: #315b45; color: #fff; }
+.site-footer { background: #171b19; }
+.brand-footer .brand-mark { background: #fff; }
+.brand-footer .brand-mark::after { color: #171b19; }
+.brand-footer .brand-word span { color: #b7c9bc; }
+.back-top { color: #b7c9bc; }
+.footer-bottom { border-top-color: #ffffff24; color: #aeb7b0; }
+:focus-visible { outline-color: #527a61; }
