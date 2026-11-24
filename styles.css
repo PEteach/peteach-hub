@@ -159,3 +159,35 @@ h1 span, .section-heading h2 span, .mission-copy h2 span { color: #315b45; }
 .back-top { color: #b7c9bc; }
 .footer-bottom { border-top-color: #ffffff24; color: #aeb7b0; }
 :focus-visible { outline-color: #527a61; }
+
+
+/* Accent vert forêt renforcé */
+.hero {
+  background: #315b45;
+  color: #fff;
+  border-bottom-color: #315b45;
+}
+.hero .eyebrow { color: #d7e5da; }
+.hero h1 { color: #fff; }
+.hero h1 span { color: #d0e2d4; }
+.hero .hero-lead { color: #e2ebe4; }
+.hero .hero-proof { color: #d0ddd3; }
+.hero .text-link { color: #fff; }
+.hero .button-lime {
+  background: #fff;
+  color: #315b45;
+}
+.hero .button-lime:hover { background: #e8efe9; }
+.hero-bottom-line { border-top-color: rgba(255,255,255,.22); }
+.hero-bottom-line .container { color: #d0ddd3; }
+.brand-mark { background: #315b45; }
+.resource-card { border-top: 3px solid #315b45; }
+.resource-icon, .icon-lime, .icon-blue, .icon-coral {
+  background: #e4ece6;
+  color: #315b45;
+}
+.resource-tab.active { color: #315b45; border-bottom-color: #315b45; }
+.tab-count { background: #e4ece6; color: #315b45; }
+.mission-section { background: #e8eee9; }
+.mission-visual { background: #315b45; }
+.button-outline { border-color: #315b45; color: #315b45; }
