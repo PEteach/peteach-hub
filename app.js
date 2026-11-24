@@ -2,7 +2,8 @@
   "use strict";
   const fallbackResources = [
     { title: "Équipes en éducation physique", description: "Organisez des équipes et des tournois pour vos cours d'éducation physique.", category: "Organisation", section: "Numérique", icon: "users", url: "https://lapizzaderafa.github.io/equipes-education-physique-/", display_order: 2, is_active: true },
-    { title: "Badminton School", description: "Un environnement numérique pour soutenir l'enseignement du badminton.", category: "Badminton", section: "Numérique", icon: "medal", url: "https://raphaelfrenette-a11y.github.io/badminton_school/", display_order: 3, is_active: true }
+    { title: "Badminton School", description: "Un environnement numérique pour soutenir l'enseignement du badminton.", category: "Badminton", section: "Numérique", icon: "medal", url: "https://raphaelfrenette-a11y.github.io/badminton_school/", display_order: 3, is_active: true },
+    { title: "Tournoi ELO", description: "Créez et gérez des tournois, des groupes et les classements ELO.", category: "Organisation", section: "Numérique", icon: "trophy", url: "https://peteach.github.io/tournois-equipes/", display_order: 4, is_active: true }
   ];
   const pedagogicalResources = [
     { title: "Goalball", description: "", category: "Pédagogie", section: "Pédagogique", icon: "activity", placeholder: true, display_order: 1, is_active: true },
@@ -145,7 +146,9 @@
       });
       if (!response.ok) throw new Error(`Supabase HTTP ${response.status}`);
       const rows = await response.json();
-      resources = [...(Array.isArray(rows) && rows.length ? rows : fallbackResources), ...pedagogicalResources];
+      const loadedResources = Array.isArray(rows) && rows.length ? rows : fallbackResources;
+      const tournamentElo = fallbackResources.find(r => r.title === "Tournoi ELO");
+      resources = [...loadedResources.filter(r => r.title !== "Tournoi ELO" && r.url !== tournamentElo.url), tournamentElo, ...pedagogicalResources];
       status.textContent = "";
     } catch (error) {
       console.warn("PEteach: impossible de charger les ressources depuis Supabase.", error);
